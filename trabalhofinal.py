@@ -1,3 +1,6 @@
+turmas = {}
+alunos = {}
+professores = {}
 import json
 
 
@@ -10,7 +13,7 @@ def menu_principal():
     [ 2 ] Menu professor
     [ 3 ] Menu aluno
     [ 0 ] Sair''')
-    print(" ")
+    print(" ") 
 
 def menu_coordenador():
     print(" ")
@@ -39,6 +42,7 @@ def menu_professor():
     print(" ")
 
 def menu_aluno():
+    print(" ")
     print('{:=^40}'.format(' Gestão do aluno '))
     print('-' *40)
     print('''
@@ -47,6 +51,7 @@ def menu_aluno():
     [ 3 ] Visualizar aluno
     [ 4 ] Apagar aluno
     [ 0 ] Sair''')
+    print(" ")
 
 def cadastrar_turma(turmas, professores, alunos):
     disciplina = input("Digite o nome da disciplina (turma): ")
@@ -56,7 +61,7 @@ def cadastrar_turma(turmas, professores, alunos):
         print("Professores disponíveis:")
         for matricula, nome in professores.items():
             print(f"Matrícula: {matricula} | Nome: {nome}")
-        matricula_professor = input("Digite a matrícula do professor da turma: ")
+        matricula_professor = int(input("Digite a matrícula do professor da turma: "))
         if matricula_professor not in professores:
             print("Professor não encontrado")
         else:
@@ -69,6 +74,8 @@ def cadastrar_turma(turmas, professores, alunos):
             if alunos_turma:
                 turmas[disciplina] = matricula_professor
                 print(f"Turma de {disciplina} criada com sucesso")
+                return turmas, professores, alunos
+                
             else:
                 print("Nenhum aluno válido selecionado")
         
@@ -87,23 +94,23 @@ def cadastrar_aluno(alunos):
             return alunos
 
 def cadastrar_professor(professores):
-    nome_professor = input("Digite o nome do professor: ")
-    if nome_professor.isnumeric() or nome_professor == "":
+    nome = input("Digite o nome do professor: ")
+    if nome.isnumeric() or nome == "":
         print("Números ou espaços em branco são inválidos.")
     else:
-        nome_composto = nome_professor.split()
+        nome_composto = nome.split()
         if len(nome_composto) < 2:
             print(" ")
             print("Nome inválido, ele deve ser nome composto.")
         else:
             matricula = len(professores)
-            professores[matricula] = nome_professor
+            professores[matricula] = nome
             print(" ")
-            print(f"Professor {nome_professor} cadastrado com matrícula {matricula}")
+            print(f"Professor {nome} cadastrado com matrícula {matricula}")
             return professores
 
 def editar_turma(turmas, professores, alunos):
-    disciplina = input("Digite o nome da disciplina (turma) que deseja editar: ")
+    disciplina = int(input("Digite o nome da disciplina (turma) que deseja editar: "))
     if disciplina in turmas:
         print("Professores disponíveis:")
         for matricula, nome in professores.items():
@@ -113,12 +120,14 @@ def editar_turma(turmas, professores, alunos):
             print("Alunos disponíveis:")
             for matricula, nome in alunos.items():
                 print(f"Matrícula: {matricula} | Nome: {nome}")
-            alunos_turma = input("Digite as novas matrículas dos alunos da turma: ").split(" ")
+            alunos_turma = input("Digite as novas matrículas dos alunos da turma (separe por virgula): ").split(",")
             alunos_turma = [matricula.strip() for matricula in alunos_turma]
+            alunos_turma =  int(alunos_turma)
             alunos_turma = [matricula for matricula in alunos_turma if matricula in alunos]
             if alunos_turma:
                 turmas[disciplina] = matricula_professor
                 print(f"Turma de {disciplina} atualizada com sucesso")
+                return turmas
             else:
                 print("Nenhum aluno válido selecionado")
         else:
@@ -127,28 +136,28 @@ def editar_turma(turmas, professores, alunos):
         print("Turma não encontrada")
 
 def editar_aluno(alunos):
-    matricula = input("Digite a matrícula do aluno que deseja editar: ")
-    if matricula.isnumeric():
-        if matricula in alunos:
-            nome = input("Digite o novo nome do aluno: ")
-            alunos[matricula] = nome
-            print(f"Aluno com matrícula {matricula} atualizado")
-        else:
-            print("Aluno não encontrado")
+    matricula = int(input("Digite a matrícula do aluno que deseja editar: "))
+    if matricula in alunos:
+        aluno = input("Digite o novo nome do aluno: ")
+        alunos[matricula] = aluno
+        print(" ")
+        print(f"Aluno com matrícula {matricula} atualizado")
+        return alunos
     else:
-        print("Letras ou espaços em branco são inválidos.")
+        print(" ")
+        print("Aluno não encontrado")
 
 def editar_professor(professores):
-    matricula = input("Digite a matrícula do professor que deseja editar: ")
-    if matricula.isnumeric():
-        if matricula in professores.items():
-            nome = input("Digite o novo nome do professor: ")
-            professores[matricula] = nome
-            print(f"Professor com matrícula {matricula} atualizado")
-        else:
-            print("Professor não encontrado")
+    matricula = int(input("Digite a matrícula do professor que deseja editar: "))
+    if matricula in professores:
+        professor = input("Digite o novo nome do professor: ")
+        professores[matricula] = professor
+        print(" ")
+        print(f"Professor com matrícula {matricula} atualizado")
+        return professores
     else:
-        print("Letras ou espaços em branco são inválidos.")
+        print(" ")
+        print("Professor não encontrado")
 
 def visualizar_turma(turmas, professores):
     disciplina = input("Digite o nome da disciplina (turma) que deseja visualizar: ")
@@ -191,7 +200,9 @@ def visualizar_turma_alunos(turmas, alunos, professores):
 def visualizar_alunos(alunos):
     if alunos:
         print("----- Alunos Cadastrados -----")
+        print(" ")
         for matricula, nome in alunos.items():
+            
             print(f"Matrícula: {matricula} | Nome: {nome}")
     else:
         print("Nenhum aluno cadastrado")
@@ -205,27 +216,39 @@ def visualizar_professsores(professores):
     else:
         print("nenhum professor cadastrado")
 
-def apagar_turma(turma):
-        deletar_turma = input("Digite a turma que deseja apagar: ")
-        if deletar_turma not in turma:
-             print("Nome não cadastrado")
+def apagar_turma(turmas):
+        turma = input("Digite a turma que deseja apagar: ")
+        if turma in turmas:
+             del turmas [turma]
+             print(" ")
+             print(f"Turma {turma} deletado com sucesso!")
+             return turmas
         else:
-            del turma [deletar_turma]
+            print("Nome não cadastrado")
+            
         
-def apagar_aluno(aluno):
-     deletar_aluno = input("Digite o aluno que deseja apagar: ")
-     if deletar_aluno not in aluno:
-          print("Nome não cadastrado")
+def apagar_aluno(alunos):
+     matricula = int(input("Digite a matrícula do aluno que deseja apagar: "))
+     if matricula in alunos:
+          del alunos [matricula]
+          print(" ")
+          print(f"Aluno de matrícula {matricula} deletado com sucesso!")
+          return alunos
      else:
-          del aluno [deletar_aluno]
-          print(f"Aluno {aluno} deletado com sucesso!")
-
-def apagar_professor(professor):
-    deletar_professor = input("Digite o professor que deseja deletar: ")
-    if deletar_professor not in professor:
         print("Nome não cadastrado")
+          
+
+def apagar_professor(professores):
+    matricula = int(input("Digite a matrícula do professor que deseja deletar: "))
+    if matricula in professores:
+         del professores[matricula]
+         print(" ")
+         print("Professor de matrícula {matricula} deletado com sucesso!")
+         return professores
+         
     else:
-         del professor [deletar_professor]
+        print("Nome não cadastrado")
+        
 
 def salvar_dados(alunos, professores, turmas):
     with open("alunos.json", "w") as file:
@@ -252,6 +275,7 @@ def carregar_dados():
     except FileNotFoundError:
         turmas = {}
     return alunos, professores, turmas
+
 def interacao():
     while True:
         alunos, professores, turmas = carregar_dados()
