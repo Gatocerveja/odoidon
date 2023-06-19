@@ -1,11 +1,8 @@
-turmas = {}
-professores = {}
-alunos = {}
-
 import json
 
 
 def menu_principal():
+    print(" ")
     print('{:=^40}'.format(' Gestão de turmas '))
     print('-' *40)
     print('''
@@ -13,44 +10,43 @@ def menu_principal():
     [ 2 ] Menu professor
     [ 3 ] Menu aluno
     [ 0 ] Sair''')
-    opcao = int(input("Escolha um menu: "))
-    return opcao
+    print(" ")
 
 def menu_coordenador():
+    print(" ")
     print('{:=^40}'.format(' Gestão do coordenador '))
     print('-' *40)
     print('''
     [ 1 ] Criar turma
-    [ 2 ] Ver turma
-    [ 3 ] Editar turma
+    [ 2 ] Editar turma
+    [ 3 ] Visualizar turma
     [ 4 ] Apagar turma
     [ 0 ] Sair''')
-    opcao = int(input("Escolha uma opção: "))
+    print(" ")
 
 def menu_professor():
+    print(" ")
     print('{:=^40}'.format(' Gestão do professor '))
     print('-' *40)
     print('''
     [ 1 ] Cadastrar professor
-    [ 2 ] Ver dados do professor
-    [ 3 ] Editar professor cadastrado
+    [ 2 ] Editar dados do professor
+    [ 3 ] Visualizar professor cadastrado
     [ 4 ] Excluir professor
-    [ 5 ] Vizualização de turmas
+    [ 5 ] Visualização de turmas
     [ 6 ] Visualização de alunos
     [ 0 ] Sair''')
-    opcao = int(input("Escolha uma opção: "))
-
+    print(" ")
 
 def menu_aluno():
     print('{:=^40}'.format(' Gestão do aluno '))
     print('-' *40)
     print('''
     [ 1 ] Cadastrar aluno
-    [ 2 ] Vizualizar alunos
-    [ 3 ] Editar aluno
+    [ 2 ]  Editar alunos
+    [ 3 ] Visualizar aluno
     [ 4 ] Apagar aluno
     [ 0 ] Sair''')
-    opcao = int(input("Escolha uma opção: "))
 
 def cadastrar_turma(turmas, professores, alunos):
     disciplina = input("Digite o nome da disciplina (turma): ")
@@ -78,15 +74,14 @@ def cadastrar_turma(turmas, professores, alunos):
         
 def cadastrar_aluno(alunos):
     nome_aluno = input("Digite o nome do aluno: ")
-    if nome_aluno.isnumeric() or nome_aluno == "":
+    if nome_aluno.isnumeric() or nome_aluno == "" or nome_aluno == " ":
         print("Nome Inválido, espaços em branco ou números não são permitidos!")
     else:
         nome_composto = nome_aluno.split()
-        if nome_composto < 2:
+        if len(nome_composto) < 2:
             print("Nome invalido! O nome precisa ser composto.")
         else: 
             matricula = len(alunos)
-            matricula += 20231321000001
             alunos[matricula] = nome_aluno
             print(f"O aluno {nome_aluno} cadastrado com sucesso, sua matrícula é {matricula}")
             return alunos
@@ -98,11 +93,12 @@ def cadastrar_professor(professores):
     else:
         nome_composto = nome_professor.split()
         if len(nome_composto) < 2:
+            print(" ")
             print("Nome inválido, ele deve ser nome composto.")
         else:
             matricula = len(professores)
-            matricula += 20181321000001
             professores[matricula] = nome_professor
+            print(" ")
             print(f"Professor {nome_professor} cadastrado com matrícula {matricula}")
             return professores
 
@@ -145,7 +141,7 @@ def editar_aluno(alunos):
 def editar_professor(professores):
     matricula = input("Digite a matrícula do professor que deseja editar: ")
     if matricula.isnumeric():
-        if matricula in professores:
+        if matricula in professores.items():
             nome = input("Digite o novo nome do professor: ")
             professores[matricula] = nome
             print(f"Professor com matrícula {matricula} atualizado")
@@ -203,6 +199,7 @@ def visualizar_alunos(alunos):
 def visualizar_professsores(professores):
     if professores:
         print("----- Professores Cadastrados -----")
+        print(" ")
         for matricula, nome in professores.items():
             print(f"Matrícula: {matricula} | Nome: {nome}")
     else:
@@ -214,7 +211,6 @@ def apagar_turma(turma):
              print("Nome não cadastrado")
         else:
             del turma [deletar_turma]
-            return turmas
         
 def apagar_aluno(aluno):
      deletar_aluno = input("Digite o aluno que deseja apagar: ")
@@ -223,7 +219,6 @@ def apagar_aluno(aluno):
      else:
           del aluno [deletar_aluno]
           print(f"Aluno {aluno} deletado com sucesso!")
-          return alunos
 
 def apagar_professor(professor):
     deletar_professor = input("Digite o professor que deseja deletar: ")
@@ -231,9 +226,8 @@ def apagar_professor(professor):
         print("Nome não cadastrado")
     else:
          del professor [deletar_professor]
-         return professores
 
-def salvar_dados(alunos, profesores, turmas):
+def salvar_dados(alunos, professores, turmas):
     with open("alunos.json", "w") as file:
         json.dump(alunos, file)
     with open("professores.json", "w") as file:
@@ -263,11 +257,13 @@ def interacao():
         alunos, professores, turmas = carregar_dados()
 
         while True:
-            opcao = menu_principal()
+            menu_principal()
+            opcao = int(input("Digite a opção desejada: "))
             if opcao == 1:
                 while True:
                     menu_coordenador()
-                    opcao_coordenador = input("Digite a opção desejada: ")
+                    opcao_coordenador = int(input("Digite a opção desejada: "))
+                    print(" ")
                     if opcao_coordenador == 1:
                         cadastrar_turma(turmas, professores, alunos)
                     elif opcao_coordenador == 2:
@@ -283,7 +279,8 @@ def interacao():
             elif opcao == 2:
                 while True:
                     menu_professor()
-                    opcao_professor = input("Digite a opção desejada: ")
+                    opcao_professor = int(input("Digite a opção desejada: "))
+                    print(" ")
                     if opcao_professor == 1:
                         cadastrar_professor(professores)
                     elif opcao_professor == 2:
@@ -291,7 +288,7 @@ def interacao():
                     elif opcao_professor == 3:
                         visualizar_professsores(professores)
                     elif opcao_professor == 4:
-                        apagar_professor(professores, turmas)
+                        apagar_professor(professores)
                     elif opcao_professor == 5:
                         visualizar_turma_professor(turmas, professores)
                     elif opcao_professor == 6:
@@ -303,7 +300,8 @@ def interacao():
             elif opcao == 3:
                 while True:
                     menu_aluno()
-                    opcao_aluno = input("Digite a opção desejada: ")
+                    opcao_aluno = int(input("Digite a opção desejada: "))
+                    print(" ")
                     if opcao_aluno == 1:
                         cadastrar_aluno(alunos)
                     elif opcao_aluno == 2:
@@ -316,8 +314,7 @@ def interacao():
                         break
                     else:
                         print("Opção inválida")
-            elif opcao == "0":
-                salvar_dados(alunos, professores, turmas)
+            elif opcao == 0:
                 break
             else:
                 print("Opção inválida")
